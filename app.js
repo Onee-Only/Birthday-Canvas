@@ -3,7 +3,9 @@ const canvas = document.getElementById("canvas"),
     cw = 1536,
     ch = 864,
     fireworks = [],
-    particles = [];
+    particles = [],
+    textMessages = [];
+    
 
 let mousedown = false,
     // this will time the auto launches of fireworks, one launch per 80 loop ticks
@@ -74,6 +76,7 @@ class FireWork {
         // 만약 다 왔다면
         if (this.distanceTraveled <= this.distanceToTarget) {
             createParticles(this.targetPoint, this.hue);
+            textMessages.push(new TextMessage(this.targetPoint, this.hue))
             // remove the firework, use the index passed into the update function to determine which to remove
             fireworks.splice(index, 1);
         } else {
@@ -158,6 +161,52 @@ class Particle {
     }
 }
 
+class TextMessage {
+    constructor(point, hue) {
+       
+        // 밝기
+        this.brightness = random(20, 40);
+        this.point = point;
+        this.hue = hue;
+        this.sizeup = true;
+        this.size = 10;
+        this.adf = 0;
+        this.speed = 0.1;
+    }
+
+    update(index) {
+        if(this.brightness <= 50 && this.sizeup){
+            this.brightness++;
+            this.size += 1;
+            this.adf += 0.05;
+        }
+        else if (!this.sizeup) {
+            this.brightness -= 1;
+            this.point.y += this.speed;
+            this.speed += 0.02;
+        } 
+        else {
+            this.sizeup = false;
+        }
+
+
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.textAlign = 'center';
+        //ctx.fillStyle = "hsl(" + this.hue + ", 60%, " + this.brightness + "%)";
+        ctx.strokeStyle = "hsl(" + this.hue + ", 100%, " + this.brightness + "%)";
+        ctx.font = "100 "+this.size + "px system-ui";
+        ctx.setLineDash([1, 3]);
+        ctx.lineWidth = this.adf;
+      //ctx.fillText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
+      ctx.strokeText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
+      ctx.setLineDash([0, 0]);
+      ctx.lineWidth = 3;
+    }
+}
+
 // 파티클 만들기
 function createParticles(point, hue) {
     let particleCount = 70;
@@ -201,6 +250,12 @@ function loop() {
     for (const i in particles) {
         particles[i].draw();
         particles[i].update(i);
+    }
+
+    console.log(textMessages);
+    for (const i in textMessages) {
+        textMessages[i].draw();
+        textMessages[i].update(i);
     }
 
     if (timerTick >= timerTotal) {
