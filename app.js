@@ -8,8 +8,8 @@ const canvas = document.getElementById("canvas"),
     
 
 let mousedown = false,
-    // this will time the auto launches of fireworks, one launch per 80 loop ticks
-    timerTotal = 80,
+    // this will time the auto launches of fireworks, one launch per 60 loop ticks
+    timerTotal = 60,
     timerTick = 0;
 
 canvas.width = cw;
@@ -268,4 +268,11 @@ function loop() {
 
 }
 
+function handleMouseClick(event) {
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+    fireworks.push(new FireWork(new Point(mouseX, ch), new Point(mouseX, mouseY)));
+}
+
 window.onload = loop;
+window.addEventListener("click", handleMouseClick);
