@@ -76,7 +76,7 @@ class FireWork {
         // 만약 다 왔다면
         if (this.distanceTraveled <= this.distanceToTarget) {
             createParticles(this.targetPoint, this.hue);
-            textMessages.push(new TextMessage(this.targetPoint, this.hue))
+            textMessages.push(new TextMessage(this.targetPoint, this.hue));
             // remove the firework, use the index passed into the update function to determine which to remove
             fireworks.splice(index, 1);
         } else {
@@ -257,7 +257,6 @@ function loop() {
         particles[i].update(i);
     }
 
-    console.log(textMessages);
     for (const i in textMessages) {
         textMessages[i].draw();
         textMessages[i].update(i);
@@ -276,8 +275,14 @@ function loop() {
 function handleMouseClick(event) {
     const mouseX = event.clientX;
     const mouseY = event.clientY;
-    fireworks.push(new FireWork(new Point(mouseX, ch), new Point(mouseX, mouseY)));
+    fireworks.push(new FireWork(new Point(mouseX * 2, ch), new Point(mouseX * 2, mouseY)));
+}
+
+function handleWindowResize() {
+    canvas.width = window.innerWidth * 2;
+    canvas.height = window.innerHeight * 2;
 }
 
 window.onload = loop;
 window.addEventListener("click", handleMouseClick);
+window.addEventListener("resize", handleWindowResize);

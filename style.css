@@ -1,0 +1,54 @@
+body {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+}
+
+#header {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to right, #fbcac9, #8ca6ce, #ec6ead);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 90px;
+    font-weight: bold;
+    animation: gradient 3s ease infinite;
+    user-select: none;
+    height: 100%;
+    justify-content: center;
+    z-index: 10;
+    margin-bottom: 120px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#header h1 {
+    margin-left: 70px;
+}
+
+#header i {
+    font-size: 80px;
+    text-align: center;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 78% 0%;
+    }
+    50% {
+        background-position: 23% 100%;
+    }
+    100% {
+        background-position: 78% 0%;
+    }
+}
