@@ -5,7 +5,7 @@ const canvas = document.getElementById("canvas"),
     fireworks = [],
     particles = [],
     textMessages = [];
-    
+    celebrateMessages = ["생신축하합니다", "민영쌤 사랑해요♡"];
 
 let mousedown = false,
     // this will time the auto launches of fireworks, one launch per 80 loop ticks
@@ -161,6 +161,7 @@ class Particle {
     }
 }
 
+let message = 0;
 class TextMessage {
     constructor(point, hue) {
        
@@ -172,6 +173,10 @@ class TextMessage {
         this.size = 10;
         this.adf = 0;
         this.speed = 0.1;
+        this.index = message++;
+        if (message == celebrateMessages.length){
+            message = 0;
+          }
     }
 
     update(index) {
@@ -201,7 +206,7 @@ class TextMessage {
         ctx.setLineDash([1, 3]);
         ctx.lineWidth = this.adf;
       //ctx.fillText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
-      ctx.strokeText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
+      ctx.strokeText(celebrateMessages[this.index], this.point.x, this.point.y);
       ctx.setLineDash([0, 0]);
       ctx.lineWidth = 3;
     }
