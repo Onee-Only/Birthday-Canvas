@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
-    cw = 1536,
-    ch = 864,
+    cw = window.innerWidth * 2,
+    ch = window.innerHeight * 2,
     fireworks = [],
     particles = [],
     textMessages = [];
@@ -15,7 +15,7 @@ let mousedown = false,
 canvas.width = cw;
 canvas.height = ch;
 
-ctx.lineWidth = 3;
+ctx.lineWidth = 5;
 ctx.lineCap = "round";
 
 class Point {
@@ -103,7 +103,7 @@ class Particle {
 
         // 잔상을 위해 이전 위치를 저장. 큐
         this.coordinates = [];
-        this.coordinateCount = 7;
+        this.coordinateCount = 9;
 
         while (this.coordinateCount--) {
             this.coordinates.push(new Point(point.x, point.y));
@@ -111,13 +111,13 @@ class Particle {
 
         // set a random angle in all possible directions, in radians
         this.angle = random(0, Math.PI * 2);
-        this.speed = random(1, 20);
+        this.speed = random(3, 25);
 
         // 속도 바꾸기
         this.friction = 0.95;
 
         // 중력 적용
-        this.gravity = 1;
+        this.gravity = 1.5;
 
         // set the hue to a random number +-50 of the overall hue variable
         this.hue = random(hue - 20, hue + 20);
@@ -166,11 +166,11 @@ class TextMessage {
     constructor(point, hue) {
        
         // 밝기
-        this.brightness = random(20, 40);
+        this.brightness = random(40, 60);
         this.point = point;
         this.hue = hue;
         this.sizeup = true;
-        this.size = 10;
+        this.size = 20;
         this.adf = 0;
         this.speed = 0.1;
         this.index = message++;
@@ -180,13 +180,13 @@ class TextMessage {
     }
 
     update(index) {
-        if(this.brightness <= 50 && this.sizeup){
+        if(this.brightness <= 70 && this.sizeup){
             this.brightness++;
             this.size += 1;
             this.adf += 0.05;
         }
         else if (!this.sizeup) {
-            this.brightness -= 1;
+            this.brightness -= 2;
             this.point.y += this.speed;
             this.speed += 0.02;
         } 
@@ -208,7 +208,7 @@ class TextMessage {
       //ctx.fillText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
       ctx.strokeText(celebrateMessages[this.index], this.point.x, this.point.y);
       ctx.setLineDash([0, 0]);
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 5;
     }
 }
 
