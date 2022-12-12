@@ -9,7 +9,7 @@ const canvas = document.getElementById("canvas"),
 
 let mousedown = false,
     // this will time the auto launches of fireworks, one launch per 60 loop ticks
-    timerTotal = 60,
+    timerTotal = 40,
     timerTick = 0;
 
 canvas.width = cw;
@@ -214,7 +214,7 @@ class TextMessage {
 
 // 파티클 만들기
 function createParticles(point, hue) {
-    let particleCount = 70;
+    let particleCount = 90;
     while (particleCount--) {
         particles.push(new Particle(new Point(point.x, point.y), hue));
     }
