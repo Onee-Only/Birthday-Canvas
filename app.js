@@ -2,8 +2,10 @@ const canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
     cw = window.innerWidth * 2,
     ch = window.innerHeight * 2,
+    bubbleCount = 10,
     fireworks = [],
     particles = [],
+    bubbles = [],
     textMessages = [],
     celebrateMessages = [
         "생신축하합니다",
@@ -19,7 +21,7 @@ const canvas = document.getElementById("canvas"),
         "선생님 반이어서 너무 행복해요♡",
         "생신축하드립니다!!",
         "아니 나 하려고 하잖아 -김철중-",
-        "정말로 축하드려요"
+        "정말로 축하드려요",
     ],
     lineSize = 4;
 
@@ -223,6 +225,9 @@ class TextMessage {
 
 // 파티클 만들기
 function createParticles(point, hue) {
+    if (bubbles.length <= bubbleCount) {
+        bubbles.push(new Bubble(new Point(random(0, cw), random(0, ch))));
+    }
     let particleCount = 100;
     while (particleCount--) {
         particles.push(new Particle(new Point(point.x, point.y), hue));
@@ -269,12 +274,40 @@ function loop() {
         textMessages[i].update(i);
     }
 
+    for (const i in bubbles) {
+        bubbles[i].draw();
+        bubbles[i].update();
+    }
+
     if (timerTick >= timerTotal) {
         const x = random(150, cw - 150);
         fireworks.push(new FireWork(new Point(x, ch), new Point(x, random(60, ch / 2))));
         timerTick = 0;
     } else {
         timerTick++;
+    }
+}
+
+class Bubble {
+    constructor(point) {
+        this.point = point;
+        this.radius = random(200, 400);
+        this.alpha = 0.01;
+        this.change = 0.0025;
+    }
+
+    update() {
+        if (this.alpha >= 0.5 || this.alpha <= 0) {
+            this.change *= -1;
+        }
+        this.alpha += this.change;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(100, 80, 50, ${this.alpha})`;
+        ctx.arc(this.point.x, this.point.y, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }
 
