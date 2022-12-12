@@ -4,8 +4,9 @@ const canvas = document.getElementById("canvas"),
     ch = window.innerHeight * 2,
     fireworks = [],
     particles = [],
-    textMessages = [];
-    celebrateMessages = ["생신축하합니다", "민영쌤 사랑해요♡"];
+    textMessages = [],
+    celebrateMessages = ["생신축하합니다", "민영쌤 사랑해요♡", "나는 개똥벌레", "불꽃"],
+    lineSize = 4;
 
 let mousedown = false,
     // this will time the auto launches of fireworks, one launch per 60 loop ticks
@@ -15,7 +16,7 @@ let mousedown = false,
 canvas.width = cw;
 canvas.height = ch;
 
-ctx.lineWidth = 5;
+ctx.lineWidth = lineSize;
 ctx.lineCap = "round";
 
 class Point {
@@ -52,13 +53,13 @@ class FireWork {
         }
 
         // 속도
-        this.speed = 3;
+        this.speed = 1;
         // 속도 바꾸기
         this.friction = 1.05;
         // 밝기
         this.brightness = random(50, 70);
-        
-        this.hue = random(0, 360)
+
+        this.hue = random(0, 360);
     }
 
     // 상태 갱신
@@ -103,7 +104,7 @@ class Particle {
 
         // 잔상을 위해 이전 위치를 저장. 큐
         this.coordinates = [];
-        this.coordinateCount = 9;
+        this.coordinateCount = 12;
 
         while (this.coordinateCount--) {
             this.coordinates.push(new Point(point.x, point.y));
@@ -124,7 +125,7 @@ class Particle {
         this.brightness = random(50, 80);
         this.alpha = 1;
         // set how fast the particle fades out
-        this.decay = random(0.015, 0.03);
+        this.decay = random(0.015, 0.025);
     }
 
     update(index) {
@@ -164,57 +165,50 @@ class Particle {
 let message = 0;
 class TextMessage {
     constructor(point, hue) {
-       
         // 밝기
-        this.brightness = random(40, 60);
+        this.brightness = 70;
         this.point = point;
         this.hue = hue;
         this.sizeup = true;
-        this.size = 20;
+        this.size = 30;
         this.adf = 0;
         this.speed = 0.1;
         this.index = message++;
-        if (message == celebrateMessages.length){
+        if (message == celebrateMessages.length) {
             message = 0;
-          }
+        }
     }
 
     update(index) {
-        if(this.brightness <= 70 && this.sizeup){
+        if (this.brightness <= 90 && this.sizeup) {
             this.brightness++;
             this.size += 1;
             this.adf += 0.05;
-        }
-        else if (!this.sizeup) {
-            this.brightness -= 2;
+        } else if (!this.sizeup) {
+            this.brightness -= 1;
             this.point.y += this.speed;
             this.speed += 0.02;
-        } 
-        else {
+        } else {
             this.sizeup = false;
         }
-
-
     }
 
     draw() {
         ctx.beginPath();
-        ctx.textAlign = 'center';
-        //ctx.fillStyle = "hsl(" + this.hue + ", 60%, " + this.brightness + "%)";
+        ctx.textAlign = "center";
         ctx.strokeStyle = "hsl(" + this.hue + ", 100%, " + this.brightness + "%)";
-        ctx.font = "100 "+this.size + "px system-ui";
+        ctx.font = "100 " + this.size + "px system-ui";
         ctx.setLineDash([1, 3]);
         ctx.lineWidth = this.adf;
-      //ctx.fillText("민영쌤 사랑해요♡\n  -변도진-", this.point.x, this.point.y);
-      ctx.strokeText(celebrateMessages[this.index], this.point.x, this.point.y);
-      ctx.setLineDash([0, 0]);
-      ctx.lineWidth = 5;
+        ctx.strokeText(celebrateMessages[this.index], this.point.x, this.point.y);
+        ctx.setLineDash([0, 0]);
+        ctx.lineWidth = lineSize;
     }
 }
 
 // 파티클 만들기
 function createParticles(point, hue) {
-    let particleCount = 90;
+    let particleCount = 100;
     while (particleCount--) {
         particles.push(new Particle(new Point(point.x, point.y), hue));
     }
@@ -234,18 +228,16 @@ function loop() {
     // this function will run endlessly with requestAnimationFrame
     requestAnimationFrame(loop);
 
-    // hue = random(0, 360);
-
     // normally, clearRect() would be used to clear the canvas
     // we want to create a trailing effect though
     // setting the composite operation to destination-out will allow us to clear the canvas at a specific opacity, rather than wiping it entirely
-    ctx.globalCompositeOperation = 'destination-out';
+    ctx.globalCompositeOperation = "destination-out";
     // decrease the alpha property to create more prominent trails
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.fillRect( 0, 0, cw, ch );
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+    ctx.fillRect(0, 0, cw, ch);
     // change the composite operation back to our main mode
     // lighter creates bright highlight points as the fireworks and particles overlap each other
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = "lighter";
 
     for (const i in fireworks) {
         fireworks[i].draw();
@@ -263,19 +255,20 @@ function loop() {
     }
 
     if (timerTick >= timerTotal) {
-        const x = random(0, cw);
-        fireworks.push(new FireWork(new Point(x, ch), new Point(x, random(30, ch / 2))));
+        const x = random(150, cw - 150);
+        fireworks.push(new FireWork(new Point(x, ch), new Point(x, random(60, ch / 2))));
         timerTick = 0;
     } else {
         timerTick++;
     }
-
 }
 
 function handleMouseClick(event) {
     const mouseX = event.clientX;
     const mouseY = event.clientY;
-    fireworks.push(new FireWork(new Point(mouseX * 2, ch), new Point(mouseX * 2, mouseY)));
+    fireworks.push(
+        new FireWork(new Point(mouseX * 2, ch), new Point(mouseX * 2, mouseY * 2))
+    );
 }
 
 function handleWindowResize() {
