@@ -27,7 +27,7 @@ const canvas = document.getElementById("canvas"),
 
 let mousedown = false,
     // this will time the auto launches of fireworks, one launch per 60 loop ticks
-    timerTotal = 40,
+    timerTotal = 150,
     timerTick = 0;
 
 canvas.width = cw;
@@ -62,7 +62,7 @@ class FireWork {
 
         // 잔상을 위해 이전 위치를 저장. 큐
         this.coordinates = [];
-        this.coordinateCount = 2;
+        this.coordinateCount = 4;
 
         // 위치 저장
         while (this.coordinateCount--) {
@@ -70,9 +70,9 @@ class FireWork {
         }
 
         // 속도
-        this.speed = 1;
+        this.speed = 0.01;
         // 속도 바꾸기
-        this.friction = 1.05;
+        this.friction = 1.025;
         // 밝기
         this.brightness = random(50, 70);
 
@@ -108,10 +108,12 @@ class FireWork {
 
         // 마지막 위치로 이동 후 현재 위치로 선을 그림
         const lastPoint = this.coordinates[this.coordinates.length - 1];
+        ctx.lineWidth = lineSize + 3;
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(this.currentPoint.x, this.currentPoint.y);
         ctx.strokeStyle = "hsl(" + this.hue + ", 100%, " + this.brightness + "%)";
         ctx.stroke();
+        ctx.lineWidth = lineSize;
     }
 }
 
@@ -121,7 +123,7 @@ class Particle {
 
         // 잔상을 위해 이전 위치를 저장. 큐
         this.coordinates = [];
-        this.coordinateCount = 12;
+        this.coordinateCount = 20;
 
         while (this.coordinateCount--) {
             this.coordinates.push(new Point(point.x, point.y));
@@ -129,20 +131,20 @@ class Particle {
 
         // set a random angle in all possible directions, in radians
         this.angle = random(0, Math.PI * 2);
-        this.speed = random(3, 25);
+        this.speed = random(1, 30);
 
         // 속도 바꾸기
         this.friction = 0.95;
 
         // 중력 적용
-        this.gravity = 1.5;
+        this.gravity = 1.25;
 
         // set the hue to a random number +-50 of the overall hue variable
         this.hue = random(hue - 20, hue + 20);
         this.brightness = random(50, 80);
         this.alpha = 1;
         // set how fast the particle fades out
-        this.decay = random(0.015, 0.025);
+        this.decay = random(0.005, 0.01);
     }
 
     update(index) {
@@ -161,7 +163,7 @@ class Particle {
         this.alpha -= this.decay;
 
         // 알파가 충분히 낮으면 삭제
-        if (this.alpha <= this.decay) {
+        if (this.alpha <= 0.00000000000001) {
             particles.splice(index, 1);
         }
     }
@@ -202,9 +204,9 @@ class TextMessage {
             this.size += 1;
             this.adf += 0.05;
         } else if (!this.sizeup) {
-            this.brightness -= 1;
+            this.brightness -= 0.4;
             this.point.y += this.speed;
-            this.speed += 0.02;
+            this.speed += 0.01;
         } else {
             this.sizeup = false;
         }
@@ -225,7 +227,7 @@ class TextMessage {
 
 // 파티클 만들기
 function createParticles(point, hue) {
-    let particleCount = 100;
+    let particleCount = 150;
     while (particleCount--) {
         particles.push(new Particle(new Point(point.x, point.y), hue));
     }
@@ -294,7 +296,7 @@ class Bubble {
         this.alpha = 0.01;
         this.change = 0.0025;
         this.angle = random(0, Math.PI * 2);
-        this.speed = random(1, 2);
+        this.speed = random(0.1, 0.5);
     }
 
     update() {
@@ -320,7 +322,7 @@ class Bubble {
 
     draw() {
         ctx.beginPath();
-        ctx.filter = "blur(10px)";
+        ctx.filter = "blur(15px)";
         ctx.fillStyle = `rgba(100, 80, 50, ${this.alpha})`;
         ctx.arc(this.point.x, this.point.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
