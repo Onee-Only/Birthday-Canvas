@@ -2,7 +2,7 @@ const canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
     cw = window.innerWidth * 2,
     ch = window.innerHeight * 2,
-    bubbleCount = 3,
+    bubbleCount = 30,
     fireworks = [],
     particles = [],
     bubbles = [],
@@ -290,9 +290,11 @@ function loop() {
 class Bubble {
     constructor(point) {
         this.point = point;
-        this.radius = random(50, 400);
+        this.radius = random(50, 100);
         this.alpha = 0.01;
         this.change = 0.0025;
+        this.angle = random(0, Math.PI * 2);
+        this.speed = random(1, 2);
     }
 
     update() {
@@ -300,11 +302,25 @@ class Bubble {
             this.change *= -1;
         }
         this.alpha += this.change;
+        this.point.x += Math.cos(this.angle) * this.speed;
+        this.point.y += Math.sin(this.angle) * this.speed;
+        this.angle += random(-0.05, 0.05);
+        if (
+            this.point.x <= -this.radius ||
+            this.point.x >= cw + this.radius ||
+            this.point.y >= ch + this.radius ||
+            this.point.y <= -this.radius
+        ) {
+            console.log("ajkdhgf");
+            this.point.x = random(0, cw);
+            this.point.y = random(ch - 250, ch);
+            this.alpha = 0.01;
+        }
     }
 
     draw() {
         ctx.beginPath();
-        ctx.filter = "blur(50px)";
+        ctx.filter = "blur(10px)";
         ctx.fillStyle = `rgba(100, 80, 50, ${this.alpha})`;
         ctx.arc(this.point.x, this.point.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
@@ -326,7 +342,7 @@ function handleWindowResize() {
 }
 
 while (bubbles.length <= bubbleCount) {
-    bubbles.push(new Bubble(new Point(random(0, cw), random(0, ch))));
+    bubbles.push(new Bubble(new Point(random(0, cw), random(ch - 250, ch))));
 }
 
 window.onload = loop;
