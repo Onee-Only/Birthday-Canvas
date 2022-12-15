@@ -10,18 +10,14 @@ const canvas = document.getElementById("canvas"),
     celebrateMessages = [
         "생신축하합니다",
         "민영쌤 사랑해요♡",
-        "나는 개똥벌레 -김원욱-",
-        "좀 알아서 하라고 -최장우-",
-        "자발적이지 못하네 -김민재-",
-        "김원욱 실망이다 -김민재-",
         "민영쌤이 담임선생님이여서 행복합니다",
-        "아 너네가 정해 임마 -김철중-",
-        "반항하는거냐? 기머눅 -김종한-",
         "1년동안 잘 지도 해 주셔서 감사합니다!!",
         "선생님 반이어서 너무 행복해요♡",
         "생신축하드립니다!!",
-        "아니 나 하려고 하잖아 -김철중-",
         "정말로 축하드려요",
+        "선생님! 생신축하드려요!!",
+        "정말 감사합니다!",
+        "선생님, 오늘 하루 행복하세요!"
     ],
     lineSize = 4;
 
@@ -292,7 +288,7 @@ function loop() {
 class Bubble {
     constructor(point) {
         this.point = point;
-        this.radius = random(50, 100);
+        this.radius = random(50, 150);
         this.alpha = 0.01;
         this.change = 0.0025;
         this.angle = random(0, Math.PI * 2);
@@ -313,7 +309,6 @@ class Bubble {
             this.point.y >= ch + this.radius ||
             this.point.y <= -this.radius
         ) {
-            console.log("ajkdhgf");
             this.point.x = random(0, cw);
             this.point.y = random(ch - 250, ch);
             this.alpha = 0.01;
